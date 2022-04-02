@@ -8,11 +8,12 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ArrivalTimeSearch {
-	static double [] quickSort (double a[]){
+	
+	static int [] quickSort (int a[]){
 		 quickSort2(a, 0, (a.length-1));
 		 return a;
 	 }
-	 static double [] quickSort2(double a[], int low, int high) {
+	 static int [] quickSort2(int a[], int low, int high) {
 		 if(low < high) {
 			 int p = partition(a, low, high);
 			 quickSort2(a, low, p-1);
@@ -20,8 +21,8 @@ public class ArrivalTimeSearch {
 		 }
 		 return a;
 	 }
-	 static int partition(double array[], int l, int h) {
-		 double temp = array[h];
+	 static int partition(int array[], int l, int h) {
+		 int temp = array[h];
 		 int ind = l-1;
 		 for(int i=l;i <= h; i++) {
 			 if(array[i] < temp) {
@@ -32,8 +33,8 @@ public class ArrivalTimeSearch {
 		 swap(array, ind + 1, h);
 		 return (ind + 1);
 	 }
-	 static void swap (double[] a, int num1, int num2) {
-		 double temp = a[num1];
+	 static void swap (int[] a, int num1, int num2) {
+		 int temp = a[num1];
 		 a[num1] = a[num2];
 		 a[num2] = temp;
 	 }
@@ -48,6 +49,7 @@ public class ArrivalTimeSearch {
 		ArrayList<String> pickUp = new ArrayList<String>();
 		ArrayList<String> dropOff = new ArrayList<String>();
 		ArrayList<String> shape = new ArrayList<String>();
+		ArrayList<Integer> indexes = new ArrayList<Integer>();
 		Scanner scanner = new Scanner(System.in);
 		System.out.print("Enter an arrival time: (hh:mm:ss) ");
 		if(scanner.hasNext()) {
@@ -138,16 +140,35 @@ public class ArrivalTimeSearch {
 			mins2 = Integer.parseInt(minSt2);
 			secs2 = Integer.parseInt(secSt2);
 			if(hours == hours2 && mins == mins2 && secs == secs2) {
-				System.out.println("Trip ID: " + timeIDs.get(j) + ", departure time: " + depTimes.get(j) + ", stop ID: " + stopID.get(j)
+				indexes.add(j);
+			/*	System.out.println("Trip ID: " + timeIDs.get(j) + ", departure time: " + depTimes.get(j) + ", stop ID: " + stopID.get(j)
 				+ ", stop sequence: " + stopSeq.get(j) +", headsigns: " + headsigns.get(j) + ", pick up: " + pickUp.get(j) + ", drop off: "
-				+ dropOff.get(j));
+				+ dropOff.get(j)); */
 			}
+			
 			hrs2 = "";
 			minSt2 = "";
 			secSt2 = "";
 			}
 		}
-
+		int[] iDsToSort = new int[indexes.size()];
+		for(int i=0;i<indexes.size(); i++) {
+			iDsToSort[i] = Integer.parseInt(timeIDs.get(indexes.get(i)));
+		}
+		quickSort(iDsToSort);
+		ArrayList<Integer> sortedIndexes = new ArrayList<Integer>();
+		for(int i=0;i<indexes.size(); i++) {
+			for(int j=0;j<indexes.size();j++) {
+				if(iDsToSort[i] == Integer.parseInt(timeIDs.get(indexes.get(j)))){
+					sortedIndexes.add(indexes.get(j));
+				}
+			}
+		}
+		for(int j=0;j<sortedIndexes.size();j++) {
+				System.out.println("Trip ID: " + timeIDs.get(sortedIndexes.get(j)) + ", departure time: " + depTimes.get(sortedIndexes.get(j)) + ", stop ID: " + stopID.get(sortedIndexes.get(j))
+			+ ", stop sequence: " + stopSeq.get(sortedIndexes.get(j)) +", headsigns: " + headsigns.get(sortedIndexes.get(j)) + ", pick up: " + pickUp.get(sortedIndexes.get(j)) + ", drop off: "
+			+ dropOff.get(j)); 
+		}
 	}
 
 }
