@@ -8,9 +8,46 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ArrivalTimeSearch {
+	static double [] quickSort (double a[]){
+		 quickSort2(a, 0, (a.length-1));
+		 return a;
+	 }
+	 static double [] quickSort2(double a[], int low, int high) {
+		 if(low < high) {
+			 int p = partition(a, low, high);
+			 quickSort2(a, low, p-1);
+			 quickSort2(a, p+1, high);
+		 }
+		 return a;
+	 }
+	 static int partition(double array[], int l, int h) {
+		 double temp = array[h];
+		 int ind = l-1;
+		 for(int i=l;i <= h; i++) {
+			 if(array[i] < temp) {
+				 ind++;
+				 swap(array, ind, i);
+			 }
+		 }
+		 swap(array, ind + 1, h);
+		 return (ind + 1);
+	 }
+	 static void swap (double[] a, int num1, int num2) {
+		 double temp = a[num1];
+		 a[num1] = a[num2];
+		 a[num2] = temp;
+	 }
 
 	public static void main(String[] args) {
 		ArrayList<String> arrTimes = new ArrayList<String>();
+		ArrayList<String> timeIDs = new ArrayList<String>();
+		ArrayList<String> depTimes = new ArrayList<String>();
+		ArrayList<String> stopID = new ArrayList<String>();
+		ArrayList<String> stopSeq = new ArrayList<String>();
+		ArrayList<String> headsigns = new ArrayList<String>();
+		ArrayList<String> pickUp = new ArrayList<String>();
+		ArrayList<String> dropOff = new ArrayList<String>();
+		ArrayList<String> shape = new ArrayList<String>();
 		Scanner scanner = new Scanner(System.in);
 		System.out.print("Enter an arrival time: (hh:mm:ss) ");
 		if(scanner.hasNext()) {
@@ -37,6 +74,9 @@ public class ArrivalTimeSearch {
 						}
 
 			}
+			hours = Integer.parseInt(hrs);
+			mins = Integer.parseInt(minSt);
+			secs = Integer.parseInt(secSt);
 			System.out.println("Info for arrival time: " + input);
 		try {
 			FileReader fileReader = new FileReader("C:\\Users\\leaho\\Documents\\Alg & Data 2\\project input\\stop_times.txt");
@@ -48,7 +88,14 @@ public class ArrivalTimeSearch {
 					String[] timeData = line.split(",");
 					String time = timeData[1];
 						arrTimes.add(time);
-						
+						timeIDs.add(timeData[0]);
+						depTimes.add(timeData[2]);
+						stopID.add(timeData[3]);
+						stopSeq.add(timeData[4]);
+						headsigns.add(timeData[5]);
+						pickUp.add(timeData[6]);
+						dropOff.add(timeData[7]);
+						//shape.add(timeData[8]);
 					
 				}
 				else {
@@ -66,36 +113,38 @@ public class ArrivalTimeSearch {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		 String hrs2 = "";
+		 String minSt2 = "";
+	     String secSt2 = "";
 			for(int j =1;j<arrTimes.size();j++) {
-			hours = Integer.parseInt(hrs);
-			mins = Integer.parseInt(minSt);
-			secs = Integer.parseInt(secSt);
 			String check = arrTimes.get(j);
-			  hrs = "";
-			 minSt = "";
-		     secSt = "";
 			for(int i =0; i< check.length(); i++) {
 				if(i < 2) {
-					if (check.indexOf(' ') == 0) {
-						hrs += '0';
+					if (Character.isWhitespace(check.charAt(i))) {
+						hrs2 += "0";
 					}
 					else {
-			hrs += check.charAt(i);
+			hrs2 += check.charAt(i);
 				}
 				}
 				else if (i > 2 && i < 5) {
-			minSt += check.charAt(i) ;
+			minSt2 += check.charAt(i) ;
 				}
 				else if (i > 5 && i < 8) {
-					secSt += check.charAt(i) ;
+					secSt2 += check.charAt(i) ;
 						}
 			}
-			hours2 = Integer.parseInt(hrs);
-			mins2 = Integer.parseInt(minSt);
-			secs2 = Integer.parseInt(secSt);
+			hours2 = Integer.parseInt(hrs2);
+			mins2 = Integer.parseInt(minSt2);
+			secs2 = Integer.parseInt(secSt2);
 			if(hours == hours2 && mins == mins2 && secs == secs2) {
-				System.out.print("equals yay");
+				System.out.println("Trip ID: " + timeIDs.get(j) + ", departure time: " + depTimes.get(j) + ", stop ID: " + stopID.get(j)
+				+ ", stop sequence: " + stopSeq.get(j) +", headsigns: " + headsigns.get(j) + ", pick up: " + pickUp.get(j) + ", drop off: "
+				+ dropOff.get(j));
 			}
+			hrs2 = "";
+			minSt2 = "";
+			secSt2 = "";
 			}
 		}
 
