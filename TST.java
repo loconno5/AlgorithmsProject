@@ -17,7 +17,7 @@ public class TST<Value> {
 	private List<Value> vals; // possible values
 
 	private class Node<Value> {
-		public char c; // character
+		public char ch; // character
 		public Node<Value> left, mid, right; // left, middle, and right subtries
 		public Value val; // value associated with string
 
@@ -46,12 +46,10 @@ public class TST<Value> {
 	 * @param key the key
 	 * @return true if this symbol table contains {@code key} and false otherwise
 	 */
-	public boolean contains(String key) {
-		if (key == null) {
-			return false;
-		}
-		return get(key) != null;
-	}
+	/*
+	 * public boolean contains(String key) { if (key == null) { return false; }
+	 * return get(key) != null; }
+	 */
 
 	/**
 	 * Returns the value associated with the given key.
@@ -61,34 +59,29 @@ public class TST<Value> {
 	 *         table and {@code null} if the key is not in the symbol table
 	 * @return null if key is null
 	 */
-	public Value get(String key) {
-		if (key == null) {
-			return null;
-		}
-		if (key.length() == 0) {
-			return null;
-		}
-
-		Node<Value> x = get(root, key, 0);
-		if (x == null)
-			return null;
-		return x.val;
-	}
+	/*
+	 * public Value get(String key) { if (key == null) { return null; } if
+	 * (key.length() == 0) { return null; }
+	 * 
+	 * Node<Value> x = get(root, key, 0); if (x == null) return null; return x.val;
+	 * }
+	 */
 
 	// return subtrie corresponding to given key
 	private Node<Value> get(Node<Value> x, String key, int d) {
 		if (x == null) {
 			return null;
 		}
-		if (key.length() == 0)
+		if (key.length() == 0) {
 			throw new IllegalArgumentException("key must have length >= 1");
+		}
 		char c = key.charAt(d);
-		if (c < x.c) {
+		if (c < x.ch) {
 			return get(x.left, key, d);
-		} else if (c > x.c) {
+		} else if (c > x.ch) {
 			return get(x.right, key, d);
-		} else if (d < key.length() - 1) {
-			return get(x.mid, key, d + 1);
+		} else if (d < (key.length() - 1)) {
+			return get(x.mid, key, (d + 1));
 		} else {
 			return x;
 		}
@@ -97,28 +90,29 @@ public class TST<Value> {
 	public void put(String key, Value val) {
 		if (key == null) {
 			throw new IllegalArgumentException("Inputted key for put() is null");
-		} else if (!contains(key)) {
-
-			n++;
-			root = put(root, key, val, 0);
 		}
+		root = put(root, key, val, 0);
+
 	}
 
 	private Node<Value> put(Node<Value> x, String key, Value val, int y) {
 		char c = key.charAt(y);
 		if (x == null) {
 			x = new Node<Value>();
-			x.c = c;
+			x.ch = c;
+          
 		}
-		if (c < x.c) {
+		if (c < x.ch) {
 			x.left = put(x.left, key, val, y);
-		} else if (c > x.c) {
+		} else if (c > x.ch) {
 			x.right = put(x.right, key, val, y);
+			System.out.println("val" + c);
 		} else if (y < key.length() - 1) {
 			x.mid = put(x.mid, key, val, (y + 1));
 		} else {
 			x.val = val;
 		}
+
 		return x;
 	}
 
@@ -127,6 +121,7 @@ public class TST<Value> {
 	 * possible values
 	 */
 	private void findChildVals(Node<Value> x) {
+		System.out.println("enter");
 		if (x != null) {
 			findChildVals(x.left);
 			findChildVals(x.mid);
@@ -149,7 +144,7 @@ public class TST<Value> {
 	 * @throws IllegalArgumentException if key is null or if key's length is 0
 	 */
 
-	public List<Value> getList(String key) {
+	public List<Value> get(String key) {
 		if (key == null) {
 			throw new IllegalArgumentException("Inputted key for get() is null");
 		}
@@ -163,6 +158,7 @@ public class TST<Value> {
 			return null;
 
 		vals = new ArrayList<Value>();
+
 		if (x.mid.val != null)
 			vals.add(x.val);
 		findChildVals(x.mid);
