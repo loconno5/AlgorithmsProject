@@ -1,28 +1,34 @@
 package AlgorithmsProject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
-
-import BST.Node;
+import java.util.Scanner;
 
 public class TST<Value> {
 	private int n; // size
 	private Node<Value> root; // root of TST
+	private List<Value> vals; // possible values
 
-	private static class Node<Value> {
-		private char c; // character
-		private Node<Value> left, mid, right; // left, middle, and right subtries
-		private Value val; // value associated with string
-	}
+	private class Node<Value> {
+		public char c; // character
+		public Node<Value> left, mid, right; // left, middle, and right subtries
+		public Value val; // value associated with string
 
-	/**
-	 * Initializes an empty string symbol table.
-	 */
-	public TST() {
+		/**
+		 * Initializes an empty string symbol table.
+		 */
+		public Node() {
+			this.left = null;
+			this.right = null;
+			this.mid = null;
+		}
 	}
 
 	/**
@@ -62,7 +68,7 @@ public class TST<Value> {
 		if (key.length() == 0) {
 			return null;
 		}
-		;
+
 		Node<Value> x = get(root, key, 0);
 		if (x == null)
 			return null;
@@ -87,82 +93,81 @@ public class TST<Value> {
 			return x;
 		}
 	}
+
 	public void put(String key, Value val) {
-		if(!contains(key)) {
+		if (key == null) {
+			throw new IllegalArgumentException("Inputted key for put() is null");
+		} else if (!contains(key)) {
+
 			n++;
 			root = put(root, key, val, 0);
 		}
 	}
-	private Node<Value> put(Node<Value> x, String key, Value val, int y){
+
+	private Node<Value> put(Node<Value> x, String key, Value val, int y) {
 		char c = key.charAt(y);
-		if(x ==null) {
+		if (x == null) {
 			x = new Node<Value>();
 			x.c = c;
 		}
-		if(c < x.c) {
+		if (c < x.c) {
 			x.left = put(x.left, key, val, y);
-		}
-		else if (c > x.c){
+		} else if (c > x.c) {
 			x.right = put(x.right, key, val, y);
-		}
-		else if(y < key.length()-1) {
-			x.mid = put(x.mid, key, val, (y+1));
-		}
-		else {
+		} else if (y < key.length() - 1) {
+			x.mid = put(x.mid, key, val, (y + 1));
+		} else {
 			x.val = val;
 		}
 		return x;
 	}
 
-	public static void main(String[] args) {
-		ArrayList<String> busStops = new ArrayList<String>();
-		try {
-			FileReader fileReader = new FileReader(
-					"C:\\Users\\leaho\\Documents\\Alg & Data 2\\project input\\stops.txt");
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
-			boolean endOfFile = false;
-			while (!endOfFile) {
-				String line = bufferedReader.readLine();
-				if (line != null) {
-					String[] stopData = line.split(",");
-					String stopName = stopData[2];
-					int len = stopName.length();
-					String stopNameFixed = "";
-					if (stopName.charAt(1) == ('B')) {
-						String temp = "";
-						temp += " ";
-						temp += stopName.charAt(0);
-						temp += stopName.charAt(1);
-						for (int i = 0; i < len - 2; i++) {
-							stopNameFixed += stopName.charAt(i + 2);
-						}
-						stopNameFixed += temp;
-						busStops.add(stopNameFixed);
-					} else if (stopName.contains("FLAGSTOP")) {
-						String temp = " FLAGSTOP";
-						for (int i = 0; i < len - 8; i++) {
-							stopNameFixed += stopName.charAt(i + 8);
-						}
-						stopNameFixed += temp;
-						busStops.add(stopNameFixed);
+	/*
+	 * recursively searches subtries for given node adds node's value to list of
+	 * possible values
+	 */
+	private void findChildVals(Node<Value> x) {
+		if (x != null) {
+			findChildVals(x.left);
+			findChildVals(x.mid);
+			findChildVals(x.right);
 
-					} else {
-						busStops.add(stopName);
-					}
-
-				} else {
-					endOfFile = true;
-				}
-			}
-
-			bufferedReader.close();
-			fileReader.close();
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			if (x.val != null)
+				vals.add(x.val);
 		}
-//System.out.print("first   " + busStops.get(8754));
 	}
+
+	/*
+	 * * Returns a list of all values associated with nodes in the trie found with
+	 * the key and all of its subtries
+	 * 
+	 * @param key the search key
+	 * 
+	 * @return list of all values from nodes contained in the subtries of the node
+	 * associated with the key, or in that node.
+	 * 
+	 * @throws IllegalArgumentException if key is null or if key's length is 0
+	 */
+
+	public List<Value> getList(String key) {
+		if (key == null) {
+			throw new IllegalArgumentException("Inputted key for get() is null");
+		}
+
+		if (key.length() == 0) {
+			throw new IllegalArgumentException("Inputted key must have length >= 1");
+		}
+
+		Node<Value> x = get(root, key, 0);
+		if (x == null)
+			return null;
+
+		vals = new ArrayList<Value>();
+		if (x.mid.val != null)
+			vals.add(x.val);
+		findChildVals(x.mid);
+
+		return vals;
+	}
+
 }
