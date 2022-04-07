@@ -67,7 +67,7 @@ public class ArrivalTimeSearch {
 	}
 
 	public static void main(String[] args) {
-		ArrayList<String> arrTimes = new ArrayList<String>();
+		/* ArrayList<String> arrTimes = new ArrayList<String>();
 		ArrayList<String> timeIDs = new ArrayList<String>();
 		ArrayList<String> depTimes = new ArrayList<String>();
 		ArrayList<String> stopID = new ArrayList<String>();
@@ -168,8 +168,8 @@ public class ArrivalTimeSearch {
 					secSt2 = "";
 				}
 			}
-			printData(indexes, timeIDs, depTimes, stopID, pickUp, dropOff, stopSeq, headsigns );
+			//printData(indexes, timeIDs, depTimes, stopID, pickUp, dropOff, stopSeq, headsigns );
 			
-		} 
+		} */
 	} 
 } 
