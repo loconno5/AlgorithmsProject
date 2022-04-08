@@ -77,9 +77,11 @@ public class NameSearch {
 					String stopOutput = "";
 
 					System.out.println("Stop details for stop : " + busStop[2]);
-
+                    
+					String[] prefixes = new String[] {"ID", "CODE", "NAME", "DESC", "LATITUDE", "LONGITUDE", "ZONE ID" , "STOP URL", "LOC TYPE", "PARENT STATION"};
+					
 					for (int j = 0; j < busStop.length; j++) {
-						stopOutput += (": " + (!busStop[j].replaceAll(" ", "").equals("") ? busStop[j] : "unknown")
+						stopOutput += (prefixes[j] + ": " + (!busStop[j].replaceAll(" ", "").equals("") ? busStop[j] : "unknown")
 								+ ", ");
 					}
 
@@ -127,7 +129,6 @@ public class NameSearch {
 		input = new ArrayList<String>();
 		String adjustedStopName = adjustStopName(stopName);
 		List<String[]> stopDetails = TST.get(adjustedStopName);
-		//System.out.println("list " + stopDetails.get(0));
 		if (stopDetails == null || stopDetails.size() == 0) {
 			return null;
 		}
