@@ -40,32 +40,6 @@ public class TST<Value> {
 		return n;
 	}
 
-	/**
-	 * Does this symbol table contain the given key?
-	 * 
-	 * @param key the key
-	 * @return true if this symbol table contains {@code key} and false otherwise
-	 */
-	/*
-	 * public boolean contains(String key) { if (key == null) { return false; }
-	 * return get(key) != null; }
-	 */
-
-	/**
-	 * Returns the value associated with the given key.
-	 * 
-	 * @param key the key
-	 * @return the value associated with the given key if the key is in the symbol
-	 *         table and {@code null} if the key is not in the symbol table
-	 * @return null if key is null
-	 */
-	/*
-	 * public Value get(String key) { if (key == null) { return null; } if
-	 * (key.length() == 0) { return null; }
-	 * 
-	 * Node<Value> x = get(root, key, 0); if (x == null) return null; return x.val;
-	 * }
-	 */
 
 	// return subtrie corresponding to given key
 	private Node<Value> get(Node<Value> x, String key, int d) {
@@ -100,13 +74,13 @@ public class TST<Value> {
 		if (x == null) {
 			x = new Node<Value>();
 			x.ch = c;
-          
+
 		}
 		if (c < x.ch) {
 			x.left = put(x.left, key, val, y);
 		} else if (c > x.ch) {
 			x.right = put(x.right, key, val, y);
-			System.out.println("val" + c);
+
 		} else if (y < key.length() - 1) {
 			x.mid = put(x.mid, key, val, (y + 1));
 		} else {
@@ -121,7 +95,7 @@ public class TST<Value> {
 	 * possible values
 	 */
 	private void findChildVals(Node<Value> x) {
-		System.out.println("enter");
+
 		if (x != null) {
 			findChildVals(x.left);
 			findChildVals(x.mid);
