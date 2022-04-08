@@ -7,16 +7,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Arrays;
 
 public class NameSearch {
-    static TST<String[]> TST;
-	static List<String> input;
+	static TST<String[]> TST;
+	static List<String> input;;
 
 	public NameSearch() {
 
 		TST = new TST<String[]>();
+		int first = 0;
 		ArrayList<String> busStops = new ArrayList<String>();
-		
+
 		try {
 			FileReader fileReader = new FileReader(
 					"C:\\Users\\leaho\\Documents\\Alg & Data 2\\project input\\stops.txt");
@@ -24,16 +27,18 @@ public class NameSearch {
 			boolean endOfFile = false;
 			while (!endOfFile) {
 				String line = bufferedReader.readLine();
-				if (line != null) {
+				if (line != null && first > 0) {
 					String[] stopData = line.split(",");
 					String stopName = stopData[2];
 					String adjusted = adjustStopName(stopName);
 					busStops.add(adjusted);
-
 					TST.put(adjusted, stopData);
+					//System.out.println(TST.getList("W"));
+				} else if (first == 0) {
+					first++;
 					
-
 				} else {
+
 					endOfFile = true;
 				}
 			}
@@ -58,7 +63,7 @@ public class NameSearch {
 
 		else {
 
-			List<String[]> stopDetails = getStopDetails(stopName, input);
+			List<String[]> stopDetails = getStopDetails(stopName);
 
 			if (stopDetails == null || stopDetails.size() == 0) {
 				System.out.println("No stops match this search criteria");
@@ -91,11 +96,15 @@ public class NameSearch {
 		int len = stopName.length();
 		String stopNameFixed = "";
 		String returnStop = "";
+		input = new ArrayList<String>();
+		String[] stopWords = stopName.split(" ");
 		if (stopName.charAt(1) == ('B')) {
 			String temp = "";
 			temp += " ";
 			temp += stopName.charAt(0);
 			temp += stopName.charAt(1);
+			String firstWord = stopWords[0];
+			input.add(firstWord);
 			for (int i = 0; i < len - 2; i++) {
 				stopNameFixed += stopName.charAt(i + 2);
 			}
@@ -114,10 +123,11 @@ public class NameSearch {
 		return returnStop;
 	}
 
-	public static List<String[]> getStopDetails(String stopName, List<String> input) {
+	public static List<String[]> getStopDetails(String stopName) {
+		input = new ArrayList<String>();
 		String adjustedStopName = adjustStopName(stopName);
-		List<String[]> stopDetails = TST.getList(adjustedStopName);
-
+		List<String[]> stopDetails = TST.get(adjustedStopName);
+		//System.out.println("list " + stopDetails.get(0));
 		if (stopDetails == null || stopDetails.size() == 0) {
 			return null;
 		}
@@ -127,6 +137,7 @@ public class NameSearch {
 			curr = stopDetails.get(i)[2];
 			String[] stopWords = curr.split(" ");
 			for (int j = 0; j < input.size(); j++) {
+				System.out.print("checking" + stopWords[j]);
 				if (stopWords[j].equals(input.get(j))) {
 					same = true;
 				} else {
