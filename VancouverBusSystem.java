@@ -12,13 +12,13 @@ public class VancouverBusSystem {
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
 		boolean validInput = false;
-        for(int i=0;i<100;i++) {
-        	System.out.print("*");
-        }
+		for (int i = 0; i < 100; i++) {
+			System.out.print("*");
+		}
 		System.out.print(" \n                        Welcome to the Vancouver Bus System!\n");
-		for(int i=0;i<100;i++) {
-        	System.out.print("*");
-        }
+		for (int i = 0; i < 100; i++) {
+			System.out.print("*");
+		}
 		design();
 
 		while (!validInput) {
@@ -32,18 +32,16 @@ public class VancouverBusSystem {
 				switch (userChoice) {
 				case 0:
 					validInput = true;
-					System.out.println("Quit selected");
+					System.out.println("Quit selected" + "\nGoodbye and have a nice day.");
 					break;
 				case 1:
 					validInput = true;
 					callShortestPaths();
 					break;
 				case 2:
-					validInput = true;
 					callTST();
 					break;
 				case 3:
-					validInput = true;
 					callArrivalTimeSearch();
 					break;
 				default:
@@ -62,13 +60,9 @@ public class VancouverBusSystem {
 
 	}
 
-
-
-	
-
 	public static void design() {
 		String space = "              ";
-		System.out.print("\n" +space );
+		System.out.print("\n" + space);
 		for (int i = 0; i < 30; i++) {
 			System.out.print("_");
 		}
@@ -197,15 +191,29 @@ public class VancouverBusSystem {
 	}
 
 	public static void callShortestPaths() {
+		 ShortestPaths test = new ShortestPaths("C:\\Users\\leaho\\Documents\\Alg & Data 2\\project input\\stops.txt");
+		boolean valid = false;
+		Scanner in = new Scanner(System.in);
+		while (!valid) {
+			System.out.print("Please enter two different bus stops(separated by a space): ");
+			if (in.hasNextInt()) {
+				valid = true;
+				int stop1 = in.nextInt();
+				int stop2 = in.nextInt();
+				System.out.print("Finding shortest path from stop_id " + stop1 + " to stop_id " + stop2);
 
+			} else {
+				System.out.print("Invalid input. Please try again: ");
+			}
+		}
+		in.close();
 	}
-
 	public static void callTST() {
 		boolean validSearch = false;
 		Scanner scanner = new Scanner(System.in);
 		NameSearch n = new NameSearch();
 		while (!validSearch) {
-			System.out.println("Enter the stop you are looking for:\n");
+			System.out.print("Enter the stop you are looking for:\n");
 			String inputStop = scanner.nextLine();
 			if (n.displayStopDetails(inputStop.toUpperCase()))
 				;
