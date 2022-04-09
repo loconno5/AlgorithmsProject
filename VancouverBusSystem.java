@@ -21,42 +21,46 @@ public class VancouverBusSystem {
 		}
 		design();
 
+
 		while (!validInput) {
-			System.out.println("\nChoose which feature you want (0, 1, 2 or 3):\n" + "0: Quit\n"
+			System.out.println("\nChoose which feature you want (1, 2 or 3) or 'quit' to quit:\n"
 					+ "1: Shortest path between two bus stops\n" + "2: Search for a bus stop\n"
 					+ "3: Search for trips at a given time\n");
+			if (input.hasNext("quit")) {
+				System.out.println("'Quit' selected" + "\nGoodbye and have a nice day.");
+				validInput = true;
+			} else {
 
-			if (input.hasNextInt()) {
-				int userChoice = input.nextInt();
+				if (input.hasNextInt()) {
+					int userChoice = input.nextInt();
 
-				switch (userChoice) {
-				case 0:
-					validInput = true;
-					System.out.println("Quit selected" + "\nGoodbye and have a nice day.");
-					break;
-				case 1:
-					validInput = true;
-					callShortestPaths();
-					break;
-				case 2:
-					callTST();
-					break;
-				case 3:
-					callArrivalTimeSearch();
-					break;
-				default:
-					System.out.println("Choice not valid.");
+					if(userChoice == 1) {
+						//validInput = true;
+						System.out.print("Loading shortest paths feature...\n");
+						callShortestPaths();
+					}
+					else if(userChoice == 2) {
+						System.out.print("Loading name search feature...\n");
+						callTST();
+					}
+					else if(userChoice == 3) {
+						System.out.print("Loading time search feature...\n");
+						callArrivalTimeSearch();
+					}
+					else {
+						System.out.println("Choice not valid.");
+					}
+					}
 
+				
+
+				else if (input.hasNext()  ) {
+					System.out.println("Please only enter numbers.");
+					input.next();
 				}
 			}
 
-			else {
-				System.out.println("Please only enter numbers.");
-				input.nextLine();
-			}
-
-		}
-		input.close();
+		}//input.close();
 
 	}
 
@@ -95,7 +99,9 @@ public class VancouverBusSystem {
 		ArrayList<String> shape = new ArrayList<String>();
 		ArrayList<Integer> indexes = new ArrayList<Integer>();
 		Scanner scanner = new Scanner(System.in);
+		boolean end = false;
 		System.out.print("Enter an arrival time: (hh:mm:ss) ");
+
 		if (scanner.hasNext()) {
 			String input = scanner.next();
 			int hours = 0;
@@ -121,77 +127,84 @@ public class VancouverBusSystem {
 			hours = Integer.parseInt(hrs);
 			mins = Integer.parseInt(minSt);
 			secs = Integer.parseInt(secSt);
-			System.out.println("Info for arrival time: " + input);
-			try {
-				FileReader fileReader = new FileReader(
-						"C:\\Users\\leaho\\Documents\\Alg & Data 2\\project input\\stop_times.txt");
-				BufferedReader bufferedReader = new BufferedReader(fileReader);
-				boolean endOfFile = false;
-				while (!endOfFile) {
-					String line = bufferedReader.readLine();
-					if (line != null) {
-						String[] timeData = line.split(",");
-						String time = timeData[1];
-						arrTimes.add(time);
-						timeIDs.add(timeData[0]);
-						depTimes.add(timeData[2]);
-						stopID.add(timeData[3]);
-						stopSeq.add(timeData[4]);
-						headsigns.add(timeData[5]);
-						pickUp.add(timeData[6]);
-						dropOff.add(timeData[7]);
+			if (hours > 24) {
+				System.out.println("Error: this is not a valid time, please try again:");
+				end = true;
 
-					} else {
-						endOfFile = true;
-					}
-				}
-
-				bufferedReader.close();
-				fileReader.close();
-
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
-			String hrs2 = "";
-			String minSt2 = "";
-			String secSt2 = "";
-			for (int j = 1; j < arrTimes.size(); j++) {
-				String check = arrTimes.get(j);
-				for (int i = 0; i < check.length(); i++) {
-					if (i < 2) {
-						if (Character.isWhitespace(check.charAt(i))) {
-							hrs2 += "0";
+			if (!end) {
+				System.out.println("Info for arrival time: " + input);
+				try {
+					FileReader fileReader = new FileReader(
+							"C:\\Users\\leaho\\Documents\\Alg & Data 2\\project input\\stop_times.txt");
+					BufferedReader bufferedReader = new BufferedReader(fileReader);
+					boolean endOfFile = false;
+					while (!endOfFile) {
+						String line = bufferedReader.readLine();
+						if (line != null) {
+							String[] timeData = line.split(",");
+							String time = timeData[1];
+							arrTimes.add(time);
+							timeIDs.add(timeData[0]);
+							depTimes.add(timeData[2]);
+							stopID.add(timeData[3]);
+							stopSeq.add(timeData[4]);
+							headsigns.add(timeData[5]);
+							pickUp.add(timeData[6]);
+							dropOff.add(timeData[7]);
+
 						} else {
-							hrs2 += check.charAt(i);
+							endOfFile = true;
 						}
-					} else if (i > 2 && i < 5) {
-						minSt2 += check.charAt(i);
-					} else if (i > 5 && i < 8) {
-						secSt2 += check.charAt(i);
-					}
-				}
-				hours2 = Integer.parseInt(hrs2);
-				mins2 = Integer.parseInt(minSt2);
-				secs2 = Integer.parseInt(secSt2);
-				if (hours <= 23) {
-					if (hours == hours2 && mins == mins2 && secs == secs2) {
-						indexes.add(j);
 					}
 
-					hrs2 = "";
-					minSt2 = "";
-					secSt2 = "";
+					bufferedReader.close();
+					fileReader.close();
+
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
+				String hrs2 = "";
+				String minSt2 = "";
+				String secSt2 = "";
+				for (int j = 1; j < arrTimes.size(); j++) {
+					String check = arrTimes.get(j);
+					for (int i = 0; i < check.length(); i++) {
+						if (i < 2) {
+							if (Character.isWhitespace(check.charAt(i))) {
+								hrs2 += "0";
+							} else {
+								hrs2 += check.charAt(i);
+							}
+						} else if (i > 2 && i < 5) {
+							minSt2 += check.charAt(i);
+						} else if (i > 5 && i < 8) {
+							secSt2 += check.charAt(i);
+						}
+					}
+					hours2 = Integer.parseInt(hrs2);
+					mins2 = Integer.parseInt(minSt2);
+					secs2 = Integer.parseInt(secSt2);
+					if (hours <= 23) {
+						if (hours == hours2 && mins == mins2 && secs == secs2) {
+							indexes.add(j);
+						}
+
+						hrs2 = "";
+						minSt2 = "";
+						secSt2 = "";
+					}
+				}
+				ArrivalTimeSearch.printData(indexes, timeIDs, depTimes, stopID, pickUp, dropOff, stopSeq, headsigns);
+
 			}
-			ArrivalTimeSearch.printData(indexes, timeIDs, depTimes, stopID, pickUp, dropOff, stopSeq, headsigns);
-
 		}
 	}
 
 	public static void callShortestPaths() {
-		 ShortestPaths test = new ShortestPaths("C:\\Users\\leaho\\Documents\\Alg & Data 2\\project input\\stops.txt");
+		ShortestPaths test = new ShortestPaths("C:\\Users\\leaho\\Documents\\Alg & Data 2\\project input\\stops.txt");
 		boolean valid = false;
 		Scanner in = new Scanner(System.in);
 		while (!valid) {
@@ -201,13 +214,37 @@ public class VancouverBusSystem {
 				int stop1 = in.nextInt();
 				int stop2 = in.nextInt();
 				System.out.print("Finding shortest path from stop_id " + stop1 + " to stop_id " + stop2);
+				int stop1Index = test.map.get(stop1);
+				int stop2Index = test.map.get(stop2);
+
+				DijkstraSP dijkstraGraph = new DijkstraSP(test.graph, stop1Index);
+
+				if (dijkstraGraph.hasPathTo(stop2Index)) {
+					double pathLength = dijkstraGraph.distTo(stop2Index);
+					System.out.println("\nCost: " + pathLength);
+
+					Iterable<DirectedEdge> stopList = dijkstraGraph.pathTo(stop2Index);
+					System.out.println("Would you like to see list of stops along this route? (yes/no)");
+					String ans = in.next();
+					if (ans.equalsIgnoreCase("yes")) {
+						System.out.println("List of stops en route (and associated costs):");
+						for (DirectedEdge stop : stopList) {
+							System.out.println("Stop ID: " + stop.to() + "\t Cost: " + stop.weight());
+						}
+					
+				} else {
+					System.out.println("There's no path from stop \"" + stop1 + "\" to stop \"" + stop2 + "\"");
+				}
 
 			} else {
 				System.out.print("Invalid input. Please try again: ");
 			}
 		}
-		in.close();
+		}
+		//in.close();
+		
 	}
+
 	public static void callTST() {
 		boolean validSearch = false;
 		Scanner scanner = new Scanner(System.in);
@@ -215,10 +252,11 @@ public class VancouverBusSystem {
 		while (!validSearch) {
 			System.out.print("Enter the stop you are looking for:\n");
 			String inputStop = scanner.nextLine();
-			if (n.displayStopDetails(inputStop.toUpperCase()))
-				;
-			validSearch = true;
-
+			if (n.displayStopDetails(inputStop.toUpperCase())) {
+				validSearch = true;
+			} else {
+				System.out.println("Invalid input please try again");
+			}
 		}
 
 	}
