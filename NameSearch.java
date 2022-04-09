@@ -30,13 +30,12 @@ public class NameSearch {
 				if (line != null && first > 0) {
 					String[] stopData = line.split(",");
 					String stopName = stopData[2];
-					String adjusted = adjustStopName(stopName);
+					String adjusted = adjustStopName(stopName, false);
 					busStops.add(adjusted);
 					TST.put(adjusted, stopData);
-					//System.out.println(TST.getList("W"));
 				} else if (first == 0) {
 					first++;
-					
+
 				} else {
 
 					endOfFile = true;
@@ -54,6 +53,13 @@ public class NameSearch {
 			e.printStackTrace();
 		}
 	}
+	/*
+	 * * Displays relevant stop details to console
+	 * 
+	 * @param stopName the name of the stop
+	 * 
+	 * @return true if details not null
+	 */
 
 	public static boolean displayStopDetails(String stopName) {
 
@@ -77,12 +83,13 @@ public class NameSearch {
 					String stopOutput = "";
 
 					System.out.println("Stop details for stop : " + busStop[2]);
-                    
-					String[] prefixes = new String[] {"ID", "CODE", "NAME", "DESC", "LATITUDE", "LONGITUDE", "ZONE ID" , "STOP URL", "LOC TYPE", "PARENT STATION"};
-					
+
+					String[] prefixes = new String[] { "ID", "CODE", "NAME", "DESC", "LATITUDE", "LONGITUDE", "ZONE ID",
+							"STOP URL", "LOC TYPE", "PARENT STATION" };
+
 					for (int j = 0; j < busStop.length; j++) {
-						stopOutput += (prefixes[j] + ": " + (!busStop[j].replaceAll(" ", "").equals("") ? busStop[j] : "unknown")
-								+ ", ");
+						stopOutput += (prefixes[j] + ": "
+								+ (!busStop[j].replaceAll(" ", "").equals("") ? busStop[j] : "unknown") + ", ");
 					}
 
 					System.out.println(stopOutput.substring(0, stopOutput.length() - 2));
@@ -94,19 +101,28 @@ public class NameSearch {
 		return true;
 	}
 
-	public static String adjustStopName(String stopName) {
+	/*
+	 * * Adjust stop name as per requirements
+	 * 
+	 * @param stopName the name of the stop
+	 * 
+	 * @return adjusted stop name
+	 */
+	public static String adjustStopName(String stopName, boolean add) {
 		int len = stopName.length();
 		String stopNameFixed = "";
 		String returnStop = "";
 		input = new ArrayList<String>();
 		String[] stopWords = stopName.split(" ");
-		if (stopName.charAt(1) == ('B')) {
+		if (stopName.contains("SB")) {
 			String temp = "";
 			temp += " ";
 			temp += stopName.charAt(0);
 			temp += stopName.charAt(1);
 			String firstWord = stopWords[0];
-			input.add(firstWord);
+			if(add) {
+				input.add(firstWord);
+				}
 			for (int i = 0; i < len - 2; i++) {
 				stopNameFixed += stopName.charAt(i + 2);
 			}
@@ -122,12 +138,20 @@ public class NameSearch {
 		} else {
 			returnStop = stopName;
 		}
+		
 		return returnStop;
 	}
+	/*
+	 * * Finds the details for each bus stop which matches the search query
+	 * 
+	 * @param stopName the name of the stop
+	 * 
+	 * @return a list of string arrays containing data about each bus stop
+	 */
 
 	public static List<String[]> getStopDetails(String stopName) {
 		input = new ArrayList<String>();
-		String adjustedStopName = adjustStopName(stopName);
+		String adjustedStopName = adjustStopName(stopName, true);
 		List<String[]> stopDetails = TST.get(adjustedStopName);
 		if (stopDetails == null || stopDetails.size() == 0) {
 			return null;
@@ -150,4 +174,6 @@ public class NameSearch {
 		return stopDetails;
 	}
 
+	
+	
 }
